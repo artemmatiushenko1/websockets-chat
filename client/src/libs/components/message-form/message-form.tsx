@@ -1,11 +1,33 @@
 import { Icon } from '../icon/icon';
+import { useState } from '@/libs/hooks/hooks';
 
-const MessageForm = () => {
+type Props = {
+  onFinish: (message: string) => void;
+};
+
+const MessageForm = ({ onFinish }: Props) => {
+  const [message, setMessage] = useState('');
+
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!message.trim()) return;
+
+    onFinish(message);
+    setMessage('');
+  };
+
+  const handleMessageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMessage(e.target.value);
+  };
+
   return (
-    <form className="w-full flex relative">
+    <form className="w-full flex relative" onSubmit={handleFormSubmit}>
       <input
         type="text"
+        value={message}
         placeholder="Type your message..."
+        onChange={handleMessageInputChange}
         className="flex-1 px-6 py-3 pr-[70px] rounded-full h-[70px] shadow-xl outline-none"
       />
       <button
