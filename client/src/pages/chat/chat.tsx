@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from '@/libs/hooks/hooks.js';
 
 const currentUserUsername = 'me';
 
-const ChatContainer = () => {
+const ChatPage = () => {
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 
   const [messages, setMessages] = useState<TMessage[]>([
@@ -105,4 +105,4 @@ const ChatContainer = () => {
   );
 };
 
-export { ChatContainer };
+export { ChatPage };

@@ -1,9 +1,13 @@
-import { ChatContainer } from './libs/components/components.js';
+import { Routes, Route } from 'react-router-dom';
+import { HomePage, ChatPage } from './pages/pages.js';
 
 const App = () => {
   return (
     <div className="h-screen w-screen flex flex-col items-center justify-center bg-sky-50">
-      <ChatContainer />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/chat" element={<ChatPage />} />
+      </Routes>
     </div>
   );
 };
