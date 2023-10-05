@@ -1,4 +1,4 @@
-import { Icon } from '../icon/icon';
+import { Icon } from '../../../../../libs/components/icon/icon';
 import { useState } from '@/libs/hooks/hooks';
 
 type Props = {

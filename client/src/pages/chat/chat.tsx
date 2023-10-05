@@ -1,6 +1,7 @@
-import { Icon, Message, MessageForm } from '@/libs/components/components.js';
+import { Icon } from '@/libs/components/components.js';
 import { TMessage } from '@/libs/types/types.js';
 import { useState, useRef, useEffect } from '@/libs/hooks/hooks.js';
+import { Message, MessageForm } from './libs/components/components.js';
 
 const currentUserUsername = 'me';
 
