@@ -90,6 +90,7 @@ const ChatContainer = () => {
         <div className="flex flex-col gap-2">
           {messages.map((message) => (
             <Message
+              timestamp={message.date}
               content={message.content}
               username={message.username}
               isByCurrentUser={currentUserUsername === message.username}
