@@ -1,4 +1,5 @@
 import './App.css';
+import { Icon } from './libs/components/components';
 
 type MessageProperties = {
   isByCurrentUser: boolean;
@@ -151,11 +152,14 @@ const ChatContainer = () => {
   ];
 
   return (
-    <div className="w-1/2 flex flex-col h-[90vh] justify-center gap-5">
+    <div className="w-1/3 flex flex-col h-[90vh] justify-center gap-5">
       <div className="flex justify-start">
-        <div>Leave</div>
+        <button className="flex gap-2 items-center text-sky-500">
+          <Icon iconName="chevronLeft" />
+          <span>Leave</span>
+        </button>
       </div>
-      <div className="grow-[9] flex flex-col-reverse max-h-[90vh] overflow-auto">
+      <div className="flex-[90%] flex flex-col-reverse max-h-[90vh] overflow-auto">
         <div className="flex flex-col gap-2">
           {messages.map((message) => (
             <Message
@@ -166,18 +170,18 @@ const ChatContainer = () => {
           ))}
         </div>
       </div>
-      <div className="flex items-center justify-center grow-[1]">
-        <form className="w-2/3 flex relative">
+      <div className="flex items-center justify-center flex-[10%]">
+        <form className="w-full flex relative">
           <input
             type="text"
             placeholder="Type your message..."
             className="flex-1 px-6 py-3 pr-[70px] rounded-full h-[70px] shadow-xl outline-none"
           />
           <button
-            className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-sky-500 to-indigo-500 h-[50px] w-[50px] rounded-full hover:bg-sky-300 active:scale-95 transition-transform"
             type="submit"
+            className="absolute flex items-center justify-center right-2 text-white top-1/2 -translate-y-1/2 bg-gradient-to-r from-sky-500 to-indigo-500 h-[50px] w-[50px] rounded-full hover:bg-sky-300 active:scale-95 transition-transform"
           >
-            ✈
+            <Icon iconName="chevronRight" />
           </button>
         </form>
       </div>
