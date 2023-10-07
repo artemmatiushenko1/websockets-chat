@@ -4,6 +4,11 @@ import { Server } from 'socket.io';
 const PORT = 3001;
 const CHAT_ROOM_KEY = 'chat';
 
+const CHAT_EVENT = {
+  JOIN: 'JOIN_CHAT',
+  LEAVE: 'LEAVE_CHAT',
+};
+
 const httpServer = createServer();
 const io = new Server(httpServer);
 
@@ -20,7 +25,7 @@ const getSocketByUsername = (targetUsername) => {
 };
 
 io.on('connection', (socket) => {
-  socket.on('JOIN_CHAT', async (username, callback) => {
+  socket.on(CHAT_EVENT.JOIN, async (username, callback) => {
     const isUserAlreadyExists = getSocketByUsername(username);
 
     if (isUserAlreadyExists) {
@@ -40,7 +45,7 @@ io.on('connection', (socket) => {
     chatUsers.delete(socket);
   };
 
-  socket.on('LEAVE_CHAT', handleDisconnect);
+  socket.on(CHAT_EVENT.LEAVE, handleDisconnect);
   socket.on('disconnect', handleDisconnect);
 });
 
