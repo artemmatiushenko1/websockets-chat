@@ -5,6 +5,7 @@ import {
   useRef,
   useEffect,
   useNavigate,
+  useCallback,
 } from '@/libs/hooks/hooks.js';
 import { Message, MessageForm } from './libs/components/components.js';
 import { useSocket } from '@/context/socket/socket.js';
@@ -36,38 +37,52 @@ const ChatPage = () => {
 
   const currentUserUsername = sessionStorage.getItem('username') ?? '';
 
+  const handleNewMessage = useCallback((newMessage: TAppMessage) => {
+    setMessages((prevState) => [...prevState, newMessage]);
+  }, []);
+
+  const handleJoinChat = useCallback(
+    (payload: { isSuccess: boolean; message: string }) => {
+      if (payload.isSuccess) {
+        setIsConnected(true);
+      } else {
+        toast.error(payload.message, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+
+        sessionStorage.removeItem('username');
+
+        navigate(AppRoute.HOME);
+      }
+    },
+    [navigate]
+  );
+
   useEffect(() => {
     if (!currentUserUsername) {
       navigate(AppRoute.HOME);
       return;
     }
 
-    socket?.emit(
-      ChatEvent.JOIN,
-      currentUserUsername,
-      (payload: { isSuccess: boolean; message: string }) => {
-        if (payload.isSuccess) {
-          setIsConnected(true);
-        } else {
-          toast.error(payload.message, {
-            position: toast.POSITION.TOP_RIGHT,
-          });
-
-          sessionStorage.removeItem('username');
-
-          navigate(AppRoute.HOME);
-        }
-      }
-    );
-
-    socket?.on(ChatEvent.NEW_MESSAGE, (newMessage: TAppMessage) => {
-      setMessages((prevState) => [...prevState, newMessage]);
-    });
+    if (!isConnected) {
+      socket?.emit(ChatEvent.JOIN, currentUserUsername, handleJoinChat);
+    }
 
     return () => {
-      socket?.emit(ChatEvent.LEAVE);
+      if (isConnected) {
+        socket?.emit(ChatEvent.LEAVE);
+        setIsConnected(false);
+      }
     };
-  }, [socket, navigate, currentUserUsername]);
+  }, [socket, navigate, currentUserUsername, isConnected, handleJoinChat]);
+
+  useEffect(() => {
+    socket?.on(ChatEvent.NEW_MESSAGE, handleNewMessage);
+
+    return () => {
+      socket?.off(ChatEvent.NEW_MESSAGE, handleNewMessage);
+    };
+  }, [socket, handleNewMessage]);
 
   useEffect(() => {
     if (messagesContainerRef.current) {
@@ -133,7 +148,7 @@ const ChatPage = () => {
 
               if (message.type === 'system') {
                 return (
-                  <div className="flex justify-center">
+                  <div key={message.id} className="flex justify-center">
                     <div className="bg-sky-100 text-sky-400 px-3 py-1 rounded-full text-sm">
                       {message.content}
                     </div>

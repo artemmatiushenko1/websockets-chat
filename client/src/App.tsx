@@ -6,7 +6,7 @@ import { SocketProvider } from './context/socket/socket.js';
 const App = () => {
   return (
     <SocketProvider>
-      <div className="h-screen w-screen flex flex-col items-center justify-center bg-sky-50">
+      <div className="h-screen w-screen flex flex-col items-center justify-center">
         <Routes>
           <Route path={AppRoute.HOME} element={<HomePage />} />
           <Route path={AppRoute.CHAT} element={<ChatPage />} />

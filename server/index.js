@@ -59,8 +59,19 @@ io.on('connection', (socket) => {
   });
 
   const handleDisconnect = async () => {
+    if (!chatUsers.get(socket)) {
+      return;
+    }
+
     await socket.leave(CHAT_ROOM_KEY);
     chatUsers.delete(socket);
+
+    io.to(CHAT_ROOM_KEY).emit(ChatEvent.NEW_MESSAGE, {
+      timestamp: Date.now(),
+      type: MessageType.SYSTEM,
+      id: crypto.randomUUID(),
+      content: `${socket.data.username} left the chat`,
+    });
   };
 
   socket.on(ChatEvent.LEAVE, handleDisconnect);
