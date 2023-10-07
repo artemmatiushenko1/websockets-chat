@@ -37,8 +37,6 @@ const ChatPage = () => {
       return;
     }
 
-    console.log('render', socket);
-
     socket?.emit(
       ChatEvent.JOIN,
       currentUserUsername,
@@ -112,17 +110,23 @@ const ChatPage = () => {
         ref={messagesContainerRef}
         className="flex-[90%] flex flex-col-reverse overflow-auto"
       >
-        <div className="flex flex-col gap-2">
-          {messages.map((message) => (
-            <Message
-              key={message.id}
-              timestamp={message.timestamp}
-              content={message.content}
-              username={message.username}
-              isByCurrentUser={currentUserUsername === message.username}
-            />
-          ))}
-        </div>
+        {messages.length ? (
+          <div className="flex flex-col gap-2">
+            {messages.map((message) => (
+              <Message
+                key={message.id}
+                timestamp={message.timestamp}
+                content={message.content}
+                username={message.username}
+                isByCurrentUser={currentUserUsername === message.username}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="flex items-center justify-center flex-1 text-gray-300">
+            No messages yet
+          </div>
+        )}
       </div>
       <div className="flex items-center justify-center flex-[10%]">
         <MessageForm onFinish={handleMessageFormFinish} />
