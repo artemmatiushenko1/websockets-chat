@@ -105,14 +105,14 @@ const ChatPage = () => {
     navigate(AppRoute.HOME);
   };
 
-  if (!isConnected) return <div>Loading...</div>;
+  if (!isConnected) return <div className="text-gray-300">Loading...</div>;
 
   return (
     <div className="flex flex-col h-[90vh] justify-center gap-5 max-w-[500px] w-full">
       <div className="flex justify-start">
         <button
           onClick={handleLeaveButtonClick}
-          className="flex gap-2 items-center text-sky-500"
+          className="flex gap-2 items-center text-sky-500 px-2 py-1 transition-all active:scale-95 hover:bg-gradient-to-r from-sky-500 to-indigo-500 hover:text-white rounded-lg"
         >
           <Icon iconName="chevronLeft" />
           <span>Leave</span>

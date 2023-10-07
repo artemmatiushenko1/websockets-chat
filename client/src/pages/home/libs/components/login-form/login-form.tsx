@@ -14,6 +14,9 @@ const LoginForm = ({ onFinish }: Props) => {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!username.trim()) {
+      return;
+    }
 
     onFinish(username);
     setUsername('');
@@ -31,7 +34,7 @@ const LoginForm = ({ onFinish }: Props) => {
         placeholder="Enter your username..."
         className="w-full px-8 outline-none rounded-full rounded-br-none rounded-tr-none"
       />
-      <button className="rounded-full rounded-bl-none rounded-tl-none bg-gradient-to-r from-sky-500 to-indigo-500 px-4 text-white gap-3 shrink-0 flex items-center justify-center">
+      <button className="rounded-lg transition-all active:scale-95 bg-gradient-to-r from-sky-500 to-indigo-500 px-4 text-white gap-3 shrink-0 flex items-center justify-center">
         <Icon iconName="plus" />
         <span>Join</span>
       </button>

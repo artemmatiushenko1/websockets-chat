@@ -24,7 +24,7 @@ const Message = ({ content, username, timestamp, isByCurrentUser }: Props) => {
       }`}
     >
       <div
-        className={`inline-block rounded-full text-white px-5 max-w-1/2 overflow-hidden ${
+        className={`inline-block rounded-xl text-white px-5 max-w-1/2 overflow-hidden ${
           isByCurrentUser
             ? 'self-end bg-gradient-to-r from-sky-500 to-indigo-500 rounded-br-none py-2 text-right'
             : 'self-start bg-sky-300 rounded-bl-none py-2 text-left'
@@ -33,7 +33,7 @@ const Message = ({ content, username, timestamp, isByCurrentUser }: Props) => {
         {!isByCurrentUser && (
           <div className="font-bold text-xs">{username}</div>
         )}
-        <div>{content}</div>
+        <div className="break-words">{content}</div>
         <div className="text-[10px]">{timeString}</div>
       </div>
     </div>
