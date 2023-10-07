@@ -11,4 +11,13 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src'),
     },
   },
+  server: {
+    port: 3000,
+    proxy: {
+      '/socket.io': {
+        target: 'ws://localhost:3001',
+        ws: true,
+      },
+    },
+  },
 });
