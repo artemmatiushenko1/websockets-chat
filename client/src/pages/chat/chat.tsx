@@ -11,18 +11,8 @@ import { Message, MessageForm } from './libs/components/components.js';
 import { useSocket } from '@/context/socket/socket.js';
 import { AppRoute } from '@/libs/enums/enums.js';
 import { toast } from 'react-toastify';
-
-const ChatEvent = {
-  LEAVE: 'LEAVE_CHAT',
-  JOIN: 'JOIN_CHAT',
-  NEW_MESSAGE: 'NEW_MESSAGE',
-  POST_MESSAGE: 'POST_MESSAGE',
-} as const;
-
-const MessageType = {
-  USER: 'user',
-  SYSTEM: 'system',
-} as const;
+import { ChatEvent, MessageType } from './libs/enums/enums.js';
+import { USERNAME_SESSION_KEY } from '@/libs/constants/constants.js';
 
 const ChatPage = () => {
   const { socket } = useSocket();
@@ -35,7 +25,8 @@ const ChatPage = () => {
 
   const [messages, setMessages] = useState<TAppMessage[]>([]);
 
-  const currentUserUsername = sessionStorage.getItem('username') ?? '';
+  const currentUserUsername =
+    sessionStorage.getItem(USERNAME_SESSION_KEY) ?? '';
 
   const handleNewMessage = useCallback((newMessage: TAppMessage) => {
     setMessages((prevState) => [...prevState, newMessage]);
@@ -50,7 +41,7 @@ const ChatPage = () => {
           position: toast.POSITION.TOP_RIGHT,
         });
 
-        sessionStorage.removeItem('username');
+        sessionStorage.removeItem(USERNAME_SESSION_KEY);
 
         navigate(AppRoute.HOME);
       }
@@ -109,7 +100,7 @@ const ChatPage = () => {
   };
 
   const handleLeaveButtonClick = () => {
-    sessionStorage.removeItem('username');
+    sessionStorage.removeItem(USERNAME_SESSION_KEY);
 
     navigate(AppRoute.HOME);
   };
