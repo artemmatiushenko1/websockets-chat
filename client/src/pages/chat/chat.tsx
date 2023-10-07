@@ -98,7 +98,7 @@ const ChatPage = () => {
   if (!isConnected) return <div>Loading...</div>;
 
   return (
-    <div className="w-1/3 flex flex-col h-[90vh] justify-center gap-5">
+    <div className="flex flex-col h-[90vh] justify-center gap-5 max-w-[500px] w-full">
       <div className="flex justify-start">
         <button
           onClick={handleLeaveButtonClick}
@@ -115,6 +115,7 @@ const ChatPage = () => {
         <div className="flex flex-col gap-2">
           {messages.map((message) => (
             <Message
+              key={message.id}
               timestamp={message.timestamp}
               content={message.content}
               username={message.username}
