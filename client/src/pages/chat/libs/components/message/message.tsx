@@ -1,8 +1,10 @@
+import styles from './styles.module.css';
+
 type Props = {
-  isByCurrentUser: boolean;
   username: string;
   content: string;
   timestamp: number;
+  isByCurrentUser: boolean;
 };
 
 const MAX_TIMEPART_LENGTH = 2;
@@ -24,7 +26,9 @@ const Message = ({ content, username, timestamp, isByCurrentUser }: Props) => {
       }`}
     >
       <div
-        className={`inline-block rounded-xl text-white px-5 max-w-1/2 overflow-hidden ${
+        className={`${
+          styles.message
+        } inline-block rounded-xl text-white px-5 max-w-1/2 overflow-hidden ${
           isByCurrentUser
             ? 'self-end bg-gradient-to-r from-sky-500 to-indigo-500 rounded-br-none py-2 text-right'
             : 'self-start bg-sky-300 rounded-bl-none py-2 text-left'
