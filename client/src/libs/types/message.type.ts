@@ -1,8 +1,18 @@
-type TMessage = {
+type TBaseMessage = {
   id: string;
-  username: string;
   content: string;
   timestamp: number;
 };
 
-export { type TMessage };
+type TSystemMessage = TBaseMessage & {
+  type: 'system';
+};
+
+type TUserMessage = TBaseMessage & {
+  type: 'user';
+  username: string;
+};
+
+type TAppMessage = TSystemMessage | TUserMessage;
+
+export { type TAppMessage };

@@ -1,1 +1,1 @@
-export { type TMessage } from './message.type';
+export { type TAppMessage } from './message.type';

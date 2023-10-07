@@ -1,5 +1,5 @@
 import { Icon } from '@/libs/components/components.js';
-import { TMessage } from '@/libs/types/types.js';
+import { TAppMessage } from '@/libs/types/types.js';
 import {
   useState,
   useRef,
@@ -18,6 +18,11 @@ const ChatEvent = {
   POST_MESSAGE: 'POST_MESSAGE',
 } as const;
 
+const MessageType = {
+  USER: 'user',
+  SYSTEM: 'system',
+} as const;
+
 const ChatPage = () => {
   const { socket } = useSocket();
 
@@ -27,7 +32,7 @@ const ChatPage = () => {
 
   const navigate = useNavigate();
 
-  const [messages, setMessages] = useState<TMessage[]>([]);
+  const [messages, setMessages] = useState<TAppMessage[]>([]);
 
   const currentUserUsername = sessionStorage.getItem('username') ?? '';
 
@@ -55,7 +60,7 @@ const ChatPage = () => {
       }
     );
 
-    socket?.on(ChatEvent.NEW_MESSAGE, (newMessage: TMessage) => {
+    socket?.on(ChatEvent.NEW_MESSAGE, (newMessage: TAppMessage) => {
       setMessages((prevState) => [...prevState, newMessage]);
     });
 
@@ -79,9 +84,10 @@ const ChatPage = () => {
     setMessages((prevState) => [
       ...prevState,
       {
-        id: crypto.randomUUID(),
         content: message,
-        timestamp: new Date().getTime(),
+        type: MessageType.USER,
+        timestamp: Date.now(),
+        id: crypto.randomUUID(),
         username: currentUserUsername,
       },
     ]);
@@ -112,15 +118,29 @@ const ChatPage = () => {
       >
         {messages.length ? (
           <div className="flex flex-col gap-2">
-            {messages.map((message) => (
-              <Message
-                key={message.id}
-                timestamp={message.timestamp}
-                content={message.content}
-                username={message.username}
-                isByCurrentUser={currentUserUsername === message.username}
-              />
-            ))}
+            {messages.map((message) => {
+              if (message.type === 'user') {
+                return (
+                  <Message
+                    key={message.id}
+                    content={message.content}
+                    username={message.username}
+                    timestamp={message.timestamp}
+                    isByCurrentUser={currentUserUsername === message.username}
+                  />
+                );
+              }
+
+              if (message.type === 'system') {
+                return (
+                  <div className="flex justify-center">
+                    <div className="bg-sky-100 text-sky-400 px-3 py-1 rounded-full text-sm">
+                      {message.content}
+                    </div>
+                  </div>
+                );
+              }
+            })}
           </div>
         ) : (
           <div className="flex items-center justify-center flex-1 text-gray-300">

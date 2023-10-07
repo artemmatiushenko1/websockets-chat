@@ -5,11 +5,16 @@ import crypto from 'node:crypto';
 const PORT = 3001;
 const CHAT_ROOM_KEY = 'chat';
 
-const CHAT_EVENT = {
+const ChatEvent = {
   JOIN: 'JOIN_CHAT',
   LEAVE: 'LEAVE_CHAT',
   NEW_MESSAGE: 'NEW_MESSAGE',
   POST_MESSAGE: 'POST_MESSAGE',
+};
+
+const MessageType = {
+  USER: 'user',
+  SYSTEM: 'system',
 };
 
 const httpServer = createServer();
@@ -29,7 +34,7 @@ const getSocketByUsername = (targetUsername) => {
 };
 
 io.on('connection', (socket) => {
-  socket.on(CHAT_EVENT.JOIN, async (username, callback) => {
+  socket.on(ChatEvent.JOIN, async (username, callback) => {
     const isUserAlreadyExists = getSocketByUsername(username);
 
     if (isUserAlreadyExists) {
@@ -41,7 +46,15 @@ io.on('connection', (socket) => {
       await socket.join(CHAT_ROOM_KEY);
       socket.data.username = username;
       chatUsers.set(socket, username);
-      return callback({ isSuccess: true });
+
+      callback({ isSuccess: true });
+
+      socket.to(CHAT_ROOM_KEY).emit(ChatEvent.NEW_MESSAGE, {
+        timestamp: Date.now(),
+        type: MessageType.SYSTEM,
+        id: crypto.randomUUID(),
+        content: `${username} joined the chat`,
+      });
     }
   });
 
@@ -50,20 +63,21 @@ io.on('connection', (socket) => {
     chatUsers.delete(socket);
   };
 
-  socket.on(CHAT_EVENT.LEAVE, handleDisconnect);
+  socket.on(ChatEvent.LEAVE, handleDisconnect);
   socket.on('disconnect', handleDisconnect);
 
-  socket.on(CHAT_EVENT.POST_MESSAGE, (messageContent) => {
+  socket.on(ChatEvent.POST_MESSAGE, (messageContent) => {
     const newMessage = {
       id: crypto.randomUUID(),
+      timestamp: Date.now(),
+      type: MessageType.USER,
       content: messageContent,
       username: socket.data.username,
-      timestamp: new Date().getTime(),
     };
 
     messages.push(newMessage);
 
-    socket.to(CHAT_ROOM_KEY).emit(CHAT_EVENT.NEW_MESSAGE, newMessage);
+    socket.to(CHAT_ROOM_KEY).emit(ChatEvent.NEW_MESSAGE, newMessage);
   });
 });
 
