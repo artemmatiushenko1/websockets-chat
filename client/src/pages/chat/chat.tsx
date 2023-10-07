@@ -5,56 +5,58 @@ import { Message, MessageForm } from './libs/components/components.js';
 
 const currentUserUsername = 'me';
 
+const MOCK_MESSAGES = [
+  {
+    content: 'Hello Ruby',
+    date: new Date().getTime(),
+    username: 'me',
+  },
+  {
+    content: 'Hello Artem',
+    date: new Date().getTime(),
+    username: 'Ruby',
+  },
+  {
+    content: 'How are you? 🙂',
+    date: new Date().getTime(),
+    username: 'me',
+  },
+  {
+    content: 'Hello Ruby',
+    date: new Date().getTime(),
+    username: 'me',
+  },
+  {
+    content: 'Hello Artem',
+    date: new Date().getTime(),
+    username: 'Ruby',
+  },
+  {
+    content: 'How are you? 🙂',
+    date: new Date().getTime(),
+    username: 'me',
+  },
+  {
+    content: 'Hello Ruby',
+    date: new Date().getTime(),
+    username: 'me',
+  },
+  {
+    content: 'Hello Artem',
+    date: new Date().getTime(),
+    username: 'Ruby',
+  },
+  {
+    content: 'How are you? 🙂',
+    date: new Date().getTime(),
+    username: 'me',
+  },
+];
+
 const ChatPage = () => {
   const messagesContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const [messages, setMessages] = useState<TMessage[]>([
-    {
-      content: 'Hello Ruby',
-      date: new Date().getTime(),
-      username: 'me',
-    },
-    {
-      content: 'Hello Artem',
-      date: new Date().getTime(),
-      username: 'Ruby',
-    },
-    {
-      content: 'How are you? 🙂',
-      date: new Date().getTime(),
-      username: 'me',
-    },
-    {
-      content: 'Hello Ruby',
-      date: new Date().getTime(),
-      username: 'me',
-    },
-    {
-      content: 'Hello Artem',
-      date: new Date().getTime(),
-      username: 'Ruby',
-    },
-    {
-      content: 'How are you? 🙂',
-      date: new Date().getTime(),
-      username: 'me',
-    },
-    {
-      content: 'Hello Ruby',
-      date: new Date().getTime(),
-      username: 'me',
-    },
-    {
-      content: 'Hello Artem',
-      date: new Date().getTime(),
-      username: 'Ruby',
-    },
-    {
-      content: 'How are you? 🙂',
-      date: new Date().getTime(),
-      username: 'me',
-    },
-  ]);
+  const [messages, setMessages] = useState<TMessage[]>(MOCK_MESSAGES);
 
   useEffect(() => {
     if (messagesContainerRef.current) {
