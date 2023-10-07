@@ -1,7 +1,8 @@
 type TMessage = {
+  id: string;
   username: string;
   content: string;
-  date: number;
+  timestamp: number;
 };
 
 export { type TMessage };

@@ -11,59 +11,11 @@ import { useSocket } from '@/context/socket/socket.js';
 import { AppRoute } from '@/libs/enums/enums.js';
 import { toast } from 'react-toastify';
 
-const currentUserUsername = 'me';
-
-const MOCK_MESSAGES = [
-  {
-    content: 'Hello Ruby',
-    date: new Date().getTime(),
-    username: 'me',
-  },
-  {
-    content: 'Hello Artem',
-    date: new Date().getTime(),
-    username: 'Ruby',
-  },
-  {
-    content: 'How are you? 🙂',
-    date: new Date().getTime(),
-    username: 'me',
-  },
-  {
-    content: 'Hello Ruby',
-    date: new Date().getTime(),
-    username: 'me',
-  },
-  {
-    content: 'Hello Artem',
-    date: new Date().getTime(),
-    username: 'Ruby',
-  },
-  {
-    content: 'How are you? 🙂',
-    date: new Date().getTime(),
-    username: 'me',
-  },
-  {
-    content: 'Hello Ruby',
-    date: new Date().getTime(),
-    username: 'me',
-  },
-  {
-    content: 'Hello Artem',
-    date: new Date().getTime(),
-    username: 'Ruby',
-  },
-  {
-    content: 'How are you? 🙂',
-    date: new Date().getTime(),
-    username: 'me',
-  },
-];
-
 const ChatEvent = {
   LEAVE: 'LEAVE_CHAT',
   JOIN: 'JOIN_CHAT',
+  NEW_MESSAGE: 'NEW_MESSAGE',
+  POST_MESSAGE: 'POST_MESSAGE',
 } as const;
 
 const ChatPage = () => {
@@ -75,12 +27,12 @@ const ChatPage = () => {
 
   const navigate = useNavigate();
 
-  const [messages, setMessages] = useState<TMessage[]>(MOCK_MESSAGES);
+  const [messages, setMessages] = useState<TMessage[]>([]);
+
+  const currentUserUsername = sessionStorage.getItem('username') ?? '';
 
   useEffect(() => {
-    const username = sessionStorage.getItem('username');
-
-    if (!username) {
+    if (!currentUserUsername) {
       navigate(AppRoute.HOME);
       return;
     }
@@ -89,7 +41,7 @@ const ChatPage = () => {
 
     socket?.emit(
       ChatEvent.JOIN,
-      username,
+      currentUserUsername,
       (payload: { isSuccess: boolean; message: string }) => {
         if (payload.isSuccess) {
           setIsConnected(true);
@@ -105,10 +57,14 @@ const ChatPage = () => {
       }
     );
 
+    socket?.on(ChatEvent.NEW_MESSAGE, (newMessage: TMessage) => {
+      setMessages((prevState) => [...prevState, newMessage]);
+    });
+
     return () => {
       socket?.emit(ChatEvent.LEAVE);
     };
-  }, [socket, navigate]);
+  }, [socket, navigate, currentUserUsername]);
 
   useEffect(() => {
     if (messagesContainerRef.current) {
@@ -120,11 +76,14 @@ const ChatPage = () => {
   }, [messages.length]);
 
   const handleMessageFormFinish = (message: string) => {
+    socket?.emit(ChatEvent.POST_MESSAGE, message);
+
     setMessages((prevState) => [
       ...prevState,
       {
+        id: crypto.randomUUID(),
         content: message,
-        date: new Date().getTime(),
+        timestamp: new Date().getTime(),
         username: currentUserUsername,
       },
     ]);
@@ -156,7 +115,7 @@ const ChatPage = () => {
         <div className="flex flex-col gap-2">
           {messages.map((message) => (
             <Message
-              timestamp={message.date}
+              timestamp={message.timestamp}
               content={message.content}
               username={message.username}
               isByCurrentUser={currentUserUsername === message.username}
