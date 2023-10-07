@@ -1,25 +1,23 @@
-import { Icon } from '@/libs/components/components.js';
+import { AppRoute } from '@/libs/enums/enums.js';
+import { useEffect } from '@/libs/hooks/hooks.js';
+import { useNavigate } from 'react-router-dom';
+import { LoginForm } from './libs/components/components';
 
 const HomePage = () => {
-  const handleFormSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const username = sessionStorage.getItem('username');
+
+    if (username) {
+      navigate(AppRoute.CHAT);
+    }
+  }, [navigate]);
+
+  const handleFormFinish = (username: string) => {
+    console.log({ username });
   };
 
-  return (
-    <form
-      onSubmit={handleFormSubmit}
-      className="flex justify-center gap-3 max-w-sm w-full h-12"
-    >
-      <input
-        type="text"
-        placeholder="Enter your username..."
-        className="w-full px-8 outline-none rounded-full rounded-br-none rounded-tr-none"
-      />
-      <button className="rounded-full rounded-bl-none rounded-tl-none bg-gradient-to-r from-sky-500 to-indigo-500 px-4 text-white gap-3 shrink-0 flex items-center justify-center">
-        <Icon iconName="plus" />
-        <span>Join</span>
-      </button>
-    </form>
-  );
+  return <LoginForm onFinish={handleFormFinish} />;
 };
 export { HomePage };
